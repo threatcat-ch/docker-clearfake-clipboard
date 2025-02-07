@@ -115,7 +115,7 @@ def main():
     if "#" in clippy:
         clippy = clippy.split("#")[0]
     print(clippy)
-    with open(f'{filename}.out', 'w' as f:
+    with open(f'{filename}.out', 'w') as f:
         f.write(clippy)
 
     os.remove(filename)
