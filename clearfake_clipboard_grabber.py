@@ -53,13 +53,18 @@ def handle_request(route, request):
 
     if request.url.startswith("file:"):
         route.continue_()
-
-    else:
+    elif 'bsc' in request.url:
         route.fulfill(
             status=200,
             content_type='application/json',
             body=json.dumps({"jsonrpc":"2.0","id":97,"result":"0x000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000026e6f000000000000000000000000000000000000000000000000000000000000"})
         )
+    else:
+        route.fulfill(
+            status=404,
+            content_type="text/plain",
+            body="not found!")
+        
 
 
 def get_clipboard_from_playwright(path):
