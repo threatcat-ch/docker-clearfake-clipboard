@@ -77,6 +77,9 @@ def get_clipboard_from_playwright(path):
             permissions=['clipboard-read', 'clipboard-write']
         )
         
+        # Lower the default timeout from 30 to 3 seconds
+        context.set_default_timeout(3000)
+        
         context.set_offline(True)
         page = context.new_page()
 
