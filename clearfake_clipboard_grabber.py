@@ -72,7 +72,7 @@ def get_clipboard_from_playwright(path):
     with sync_playwright() as p:
         
         debug = False
-        browser = p.chromium.launch(headless= not debug, devtools=debug)
+        browser = p.chromium.launch(headless= not debug)
         context = browser.new_context(
             permissions=['clipboard-read', 'clipboard-write']
         )
