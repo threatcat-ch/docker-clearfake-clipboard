@@ -67,7 +67,7 @@ def handle_request(route, request):
         
 
 
-def get_clipboard_from_playwright(path):
+def get_clipboard_from_playwright(path, user_agent):
 
     with sync_playwright() as p:
         
@@ -76,10 +76,7 @@ def get_clipboard_from_playwright(path):
         
         context = browser.new_context(
             permissions=['clipboard-read', 'clipboard-write'],
-            user_agent=(
-                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
-                "(KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36 Edg/126.0.0.0"
-            ),
+            user_agent=user_agent,
             viewport={"width": 1920, "height": 1080},
         )
         
@@ -107,6 +104,7 @@ def get_clipboard_from_playwright(path):
 def create_parser():
     parser = argparse.ArgumentParser(description='get the clipboard text from clearfake js file')
     parser.add_argument('js_file', type=str, help='file with the js code from the contract')
+    parser.add_argument('--user-agent', type=str, default="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36 Edg/126.0.0.0", help='user agent to use for the browser')
     return parser
 
 def main():
@@ -125,7 +123,7 @@ def main():
     with open(filename, 'w') as f:
         f.write(create_html(js_code))
 
-    clippy = get_clipboard_from_playwright(filename)
+    clippy = get_clipboard_from_playwright(filename, args.user_agent)
     if "#" in clippy:
         clippy = clippy.split("#")[0]
     print(clippy)
