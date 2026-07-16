@@ -73,8 +73,14 @@ def get_clipboard_from_playwright(path):
         
         debug = False
         browser = p.chromium.launch(headless= not debug)
+        
         context = browser.new_context(
-            permissions=['clipboard-read', 'clipboard-write']
+            permissions=['clipboard-read', 'clipboard-write'],
+            user_agent=(
+                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
+                "(KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36 Edg/126.0.0.0"
+            ),
+            viewport={"width": 1920, "height": 1080},
         )
         
         # Lower the default timeout from 30 to 3 seconds
