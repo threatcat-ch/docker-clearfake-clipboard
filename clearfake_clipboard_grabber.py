@@ -90,15 +90,22 @@ def get_clipboard_from_playwright(path, user_agent):
 
         # open a local file 
         page.goto(f"file://{path}")
-        page.get_by_role("button").click()
-        time.sleep(2)
+
+        clips = []
+        # do the click, then reload so we can determine if there is always a different subdomain
+        for _ in range(2): 
+            page.get_by_role("button").click()
+            time.sleep(1)
+            clipboard_text = page.evaluate("navigator.clipboard.readText()")
+            clips.append(clipboard_text)
+            page.reload()
+
         
-        clipboard_text = page.evaluate("navigator.clipboard.readText()")
         page.route("**/*", None) # remove handler, so we don't get errors
         time.sleep(1)
         p.stop()
 
-        return clipboard_text
+        return clips
     
 
 def create_parser():
@@ -123,12 +130,13 @@ def main():
     with open(filename, 'w') as f:
         f.write(create_html(js_code))
 
-    clippy = get_clipboard_from_playwright(filename, args.user_agent)
-    if "#" in clippy:
-        clippy = clippy.split("#")[0]
-    print(clippy)
+    clips = get_clipboard_from_playwright(filename, args.user_agent)
+    for clippy in clips: 
+        if "#" in clippy:
+            clippy = clippy.split("#")[0]
+        print(clippy)
     with open(f'{args.js_file}.out', 'w') as f:
-        f.write(clippy)
+        f.write("\n".join(clips))
 
     os.remove(filename)
     os.rmdir(temp_dir)
