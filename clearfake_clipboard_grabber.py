@@ -132,8 +132,6 @@ def main():
 
     clips = get_clipboard_from_playwright(filename, args.user_agent)
     for clippy in clips: 
-        if "#" in clippy:
-            clippy = clippy.split("#")[0]
         print(clippy)
     with open(f'{args.js_file}.out', 'w') as f:
         f.write("\n".join(clips))
