@@ -94,7 +94,7 @@ def get_clipboard_from_playwright(path, user_agent):
         clips = []
         # do the click, then reload so we can determine if there is always a different subdomain
         for _ in range(2): 
-            page.get_by_role("button").click()
+            page.get_by_role("button").first.click()
             time.sleep(1)
             clipboard_text = page.evaluate("navigator.clipboard.readText()")
             clips.append(clipboard_text)
