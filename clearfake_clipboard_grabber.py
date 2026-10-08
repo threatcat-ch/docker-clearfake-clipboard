@@ -67,7 +67,7 @@ def handle_request(route, request):
         
 
 
-def get_clipboard_from_playwright(path, user_agent):
+def get_clipboard_from_playwright(path, user_agent, timeout):
 
     with sync_playwright() as p:
         
@@ -80,8 +80,8 @@ def get_clipboard_from_playwright(path, user_agent):
             viewport={"width": 1920, "height": 1080},
         )
         
-        # Lower the default timeout from 30 to 3 seconds
-        context.set_default_timeout(3000)
+        # Lower the default timeout from 30 to 3 seconds, which is now configurable as well
+        context.set_default_timeout(timeout)
         
         context.set_offline(True)
         page = context.new_page()
@@ -111,6 +111,7 @@ def get_clipboard_from_playwright(path, user_agent):
 def create_parser():
     parser = argparse.ArgumentParser(description='get the clipboard text from clearfake js file')
     parser.add_argument('js_file', type=str, help='file with the js code from the contract')
+    parser.add_argument('--timeout', type=int, default=3000)
     parser.add_argument('--user-agent', type=str, default="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36 Edg/126.0.0.0", help='user agent to use for the browser')
     return parser
 
@@ -130,7 +131,7 @@ def main():
     with open(filename, 'w') as f:
         f.write(create_html(js_code))
 
-    clips = get_clipboard_from_playwright(filename, args.user_agent)
+    clips = get_clipboard_from_playwright(filename, args.user_agent, args.timeout)
     for clippy in clips: 
         print(clippy)
     with open(f'{args.js_file}.out', 'w') as f:
